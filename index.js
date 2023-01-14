@@ -58,6 +58,23 @@ async function run(){
             }
        })
 
+          // feedback load by post id
+
+          app.get('/feedback/:id',async(req,res)=>{
+            const id = req.params.id;      
+            const query = {
+               servicePostId:id
+            }
+            const sort = {
+               date:-1
+            }
+            const cursor = feedbackCollection.find(query).sort(sort);;
+            const allFeedback = await cursor.toArray();
+
+           res.send(allFeedback)
+           
+       })
+
     }
     finally{
 
