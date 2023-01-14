@@ -70,11 +70,42 @@ async function run(){
             }
             const cursor = feedbackCollection.find(query).sort(sort);;
             const allFeedback = await cursor.toArray();
+           res.send(allFeedback)    
+       })
 
-           res.send(allFeedback)
+         // feedback load by feedback id , for edit 
+
+         app.get('/edit/feedback/:id',async(req,res)=>{
+            const id = req.params.id;           
+            const query = {
+               _id:ObjectId(id)
+            }
+            const Feedback = await feedbackCollection.findOne(query);
+           res.send(Feedback)
+           console.log(Feedback);
            
        })
 
+       //  update feedback by id
+       
+       app.put('/update/feedback/:id',async(req,res)=>{
+        const id = req.params.id;
+        const feedback = req.body;        
+        const options = { upsert: true };
+        const filter = {
+            _id: ObjectId(id)
+        }
+        const updateDoc = {
+          $set: {
+            feedback:feedback.feedback
+          },
+        };
+        const result = await feedbackCollection.updateOne(filter,updateDoc,options);
+        res.send(result)   
+   })
+
+
+ 
     }
     finally{
 
