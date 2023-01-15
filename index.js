@@ -19,6 +19,17 @@ async function run(){
         const serviceCollection =client.db('malithas-photography').collection('serviceCollection')
         const feedbackCollection = client.db('malithas-photography').collection('feedbackCollection');
 
+       //store Service 
+        app.post('/addservice',async(req,res)=>{
+            const Services = req.body;
+            Services.date = new Date();            
+            const result = await serviceCollection.insertOne(Services);
+            if(result.acknowledged)
+            {
+                res.send({insert:true})
+            }           
+        });
+
         // get all services
         app.get('/services', async(req, res)  =>{
             const limitQuery=parseInt(req.query.limit);
@@ -47,9 +58,7 @@ async function run(){
 
          app.post('/add/feedback',async(req,res)=>{
             const userFeedback = req.body;
-
             userFeedback.date = new Date();
-
             const result = await feedbackCollection.insertOne(userFeedback);
 
             if(result.acknowledged)
@@ -81,13 +90,12 @@ async function run(){
                _id:ObjectId(id)
             }
             const Feedback = await feedbackCollection.findOne(query);
-           res.send(Feedback)
-           console.log(Feedback);
-           
+            res.send(Feedback)
+            console.log(Feedback);     
        })
 
        //  update feedback by id
-       
+
        app.put('/update/feedback/:id',async(req,res)=>{
         const id = req.params.id;
         const feedback = req.body;        
@@ -103,8 +111,6 @@ async function run(){
         const result = await feedbackCollection.updateOne(filter,updateDoc,options);
         res.send(result)   
    })
-
-
  
     }
     finally{
@@ -115,7 +121,7 @@ run().catch(err=> console.error(err))
 
 
 app.get('/',(req,res)=>{
-    res.send("Server is Running");
+    res.send(" review  Server is Running");
 });
 
 app.listen(port,()=>{
